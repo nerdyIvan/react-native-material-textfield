@@ -16,8 +16,6 @@ import RN from 'react-native/package.json';
 import Line from '../line';
 import Label from '../label';
 import Affix from '../affix';
-import Helper from '../helper';
-import Counter from '../counter';
 
 import styles from './styles.js';
 
@@ -344,6 +342,7 @@ export default class TextField extends PureComponent {
       labelTextStyle,
       titleTextStyle,
       tintColor,
+      labelColor,
       baseColor,
       textColor,
       errorColor,
@@ -421,43 +420,6 @@ export default class TextField extends PureComponent {
         { height: fontSize * 1.5 }),
     };
 
-    let errorStyle = {
-      color: errorColor,
-
-      opacity: focus.interpolate({
-        inputRange: [-1, 0, 1],
-        outputRange: [1, 0, 0],
-      }),
-
-      fontSize: title?
-        titleFontSize:
-        focus.interpolate({
-          inputRange:  [-1, 0, 1],
-          outputRange: [titleFontSize, 0, 0],
-        }),
-    };
-
-    let titleStyle = {
-      color: baseColor,
-
-      opacity: focus.interpolate({
-        inputRange: [-1, 0, 1],
-        outputRange: [0, 1, 1],
-      }),
-
-      fontSize: titleFontSize,
-    };
-
-    let helperContainerStyle = {
-      flexDirection: 'row',
-      height: (title || limit)?
-        titleFontSize * 2:
-        focus.interpolate({
-          inputRange:  [-1, 0, 1],
-          outputRange: [titleFontSize * 2, 8, 8],
-        }),
-    };
-
     let containerProps = {
       style: containerStyle,
       onStartShouldSetResponder: () => true,
@@ -487,6 +449,7 @@ export default class TextField extends PureComponent {
       fontSize,
       activeFontSize: labelFontSize,
       tintColor,
+      labelColor,
       baseColor,
       errorColor,
       animationDuration,
@@ -497,28 +460,19 @@ export default class TextField extends PureComponent {
       style: labelTextStyle,
     };
 
-    let counterProps = {
-      baseColor,
-      errorColor,
-      count,
-      limit,
-      fontSize: titleFontSize,
-      style: titleTextStyle,
-    };
-
     return (
       <View {...containerProps}>
         <Animated.View {...inputContainerProps}>
           {disabled && <Line {...lineProps} />}
 
-          <Label {...labelProps}>{label}</Label>
+          <Label {...labelProps}>{error? error : label}</Label>
 
           <View style={styles.row}>
             {this.renderAffix('prefix', active, focused)}
 
             <TextInput
               style={[styles.input, inputStyle, inputStyleOverrides]}
-              selectionColor={tintColor}
+              selectionColor={baseColor}
 
               {...props}
 
@@ -535,15 +489,6 @@ export default class TextField extends PureComponent {
             {this.renderAffix('suffix', active, focused)}
             {this.renderAccessory()}
           </View>
-        </Animated.View>
-
-        <Animated.View style={helperContainerStyle}>
-          <View style={styles.flex}>
-            <Helper style={[errorStyle, titleTextStyle]}>{error}</Helper>
-            <Helper style={[titleStyle, titleTextStyle]}>{title}</Helper>
-          </View>
-
-          <Counter {...counterProps} />
         </Animated.View>
       </View>
     );

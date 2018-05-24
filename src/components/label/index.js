@@ -24,6 +24,7 @@ export default class Label extends PureComponent {
     basePadding: PropTypes.number.isRequired,
 
     tintColor: PropTypes.string.isRequired,
+    labelColor: PropTypes.string,
     baseColor: PropTypes.string.isRequired,
     errorColor: PropTypes.string.isRequired,
 
@@ -85,6 +86,7 @@ export default class Label extends PureComponent {
       errorColor,
       baseColor,
       tintColor,
+      labelColor,
       baseSize,
       basePadding,
       style,
@@ -99,7 +101,7 @@ export default class Label extends PureComponent {
       errorColor:
       focus.interpolate({
         inputRange: [-1, 0, 1],
-        outputRange: [errorColor, baseColor, tintColor],
+        outputRange: [errorColor, baseColor, labelColor ? labelColor : tintColor],
       });
 
     let top = input.interpolate({
