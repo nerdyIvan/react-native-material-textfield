@@ -47,6 +47,8 @@ export default class TextField extends PureComponent {
     disabled: false,
     disabledLineType: 'dotted',
     disabledLineWidth: 1,
+
+    component: TextInput,
   };
 
   static propTypes = {
@@ -351,6 +353,7 @@ export default class TextField extends PureComponent {
       containerStyle,
       inputContainerStyle: inputContainerStyleOverrides,
       clearTextOnFocus,
+      component,
       ...props
     } = this.props;
 
@@ -460,6 +463,8 @@ export default class TextField extends PureComponent {
       style: labelTextStyle,
     };
 
+    const Component = (() => component)()
+
     return (
       <View {...containerProps}>
         <Animated.View {...inputContainerProps}>
@@ -470,7 +475,7 @@ export default class TextField extends PureComponent {
           <View style={styles.row}>
             {this.renderAffix('prefix', active, focused)}
 
-            <TextInput
+            <Component
               style={[styles.input, inputStyle, inputStyleOverrides]}
               selectionColor={baseColor}
 
