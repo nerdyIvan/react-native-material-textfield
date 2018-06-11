@@ -133,7 +133,7 @@ export default class TextField extends PureComponent {
     }
 
     if (props.error && props.error !== error) {
-      this.setState({ error: props.error });
+      this.setState({ error: props.error, focused: true });
     }
 
     if (props.error !== this.props.error) {
@@ -224,13 +224,13 @@ export default class TextField extends PureComponent {
   }
 
   onBlur(event) {
-    let { onBlur } = this.props;
+    let { onBlur, error } = this.props;
 
     if ('function' === typeof onBlur) {
       onBlur(event);
     }
 
-    this.setState({ focused: false });
+    this.setState({ focused: !!error });
   }
 
   onChange(event) {
