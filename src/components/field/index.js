@@ -48,7 +48,7 @@ export default class TextField extends PureComponent {
     disabledLineType: 'dotted',
     disabledLineWidth: 1,
 
-    component: TextInput,
+    textInputComponent: TextInput,
   };
 
   static propTypes = {
@@ -106,8 +106,6 @@ export default class TextField extends PureComponent {
     this.onContentSizeChange = this.onContentSizeChange.bind(this);
     this.onFocusAnimationEnd = this.onFocusAnimationEnd.bind(this);
 
-    this.updateRef = this.updateRef.bind(this, 'input');
-
     let { value, error, fontSize } = this.props;
 
     this.mounted = false;
@@ -162,28 +160,24 @@ export default class TextField extends PureComponent {
     }
   }
 
-  updateRef(name, ref) {
-    this[name] = ref;
-  }
-
   focusState(error, focused) {
     return error? -1 : (focused? 1 : 0);
   }
 
   focus() {
-    let { disabled, editable } = this.props;
+    let { disabled, editable, textInputComponent } = this.props;
 
     if (!disabled && editable) {
-      this.input.focus();
+      textInputComponent == TextInput && this.input.focus()
     }
   }
 
   blur() {
-    this.input.blur();
+    this.props.textInputComponent == TextInput && this.input.blur();
   }
 
   clear() {
-    this.input.clear();
+    this.props.textInputComponent == TextInput && this.input.clear();
 
     /* onChangeText is not triggered by .clear() */
     this.onChangeText('');
@@ -353,7 +347,7 @@ export default class TextField extends PureComponent {
       containerStyle,
       inputContainerStyle: inputContainerStyleOverrides,
       clearTextOnFocus,
-      component,
+      textInputComponent,
       ...props
     } = this.props;
 
@@ -463,7 +457,7 @@ export default class TextField extends PureComponent {
       style: labelTextStyle,
     };
 
-    const Component = (() => component)()
+    const Component = (() => textInputComponent)()
 
     return (
       <View {...containerProps}>
@@ -476,6 +470,7 @@ export default class TextField extends PureComponent {
             {this.renderAffix('prefix', active, focused)}
 
             <Component
+              ref={e => this.input = e}
               style={[styles.input, inputStyle, inputStyleOverrides]}
               selectionColor={baseColor}
 
@@ -488,7 +483,6 @@ export default class TextField extends PureComponent {
               onFocus={this.onFocus}
               onBlur={this.onBlur}
               value={value}
-              ref={this.updateRef}
             />
 
             {this.renderAffix('suffix', active, focused)}
